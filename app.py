@@ -1,6 +1,7 @@
 import uvicorn
 import pandas as pd
 from fastapi import FastAPI, Query
+from typing import Annotated, Literal 
 
 ################################################################################ 
 # DEMARRAGE DE L'INSTANCE FASTAPI
@@ -27,12 +28,16 @@ app = FastAPI(title="Awesome API",
 # /quantile
 
 
+
+
+
 ##############################################################################
 # CHARGEMENT DU DATASET DANS DF
 ##############################################################################
 
 df = pd.read_excel("ibm_hr_attrition.xlsx")
 
+ColumnName = Literal[*df.columns.tolist()]  # récupère la liste des colonnes
 
 ##############################################################################
 # DEFINITION DES ENDPOINTS
@@ -42,7 +47,7 @@ df = pd.read_excel("ibm_hr_attrition.xlsx")
 @app.get("/")
 async def index():
 
-    message = "Welcome to the awesome API of the Back-End Development Team ! " \
+    message = "Welcome to the awesome API of Sebastien VATINEL ! " \
     "This `/` is the most simple and default endpoint. " \
     "If you want to learn more, check out documentation of the api at `/docs`"
 
@@ -58,15 +63,22 @@ async def preview(n: int = 5):
 # endpoint unique
 
 @app.get("/unique-values")
-async def unique_values(column : str ="EmployeeNumber"):
+async def unique_values(column: ColumnName = "EmployeeNumber",):
     return df[column].unique().tolist()         # tolist() parce que unique() renvoie un array
 
 # endpoint groupby
 
 @app.get("/groupby")
-async def group_by(column : str ="Department",
-                   target : str = "MonthlyIncome",
-                   aggregator : str = "mean"
+async def group_by(column : ColumnName = "Department",
+                   target : ColumnName = "MonthlyIncome",
+                   aggregator : Literal[
+                                            "mean",
+                                            "sum",
+                                            "min",
+                                            "max",
+                                            "median",
+                                            "count",
+                                        ]= "mean"
                    ) :
     agg_result = df.groupby(column)[target].agg(aggregator).round(2)
     return agg_result.to_dict()
@@ -74,7 +86,7 @@ async def group_by(column : str ="Department",
 # endpoint filter-by
 
 @app.get("/filter-by")
-async def filter_by(column : str ="Department",
+async def filter_by(column : ColumnName = "Department",
                     cat : list[str]= Query(["Sales"])  #La fonction Query de FastAPI nécessaire pour prendre en compte une liste
                     ):
          filter_result = df[df[column].isin(cat)]
@@ -84,7 +96,7 @@ async def filter_by(column : str ="Department",
 # endpoint quantile
 
 @app.get("/quantile")
-async def quantile(column : str ="MonthlyIncome",
+async def quantile(column : ColumnName = "MonthlyIncome",
                    position : int=0,    # 0 pour bottom , 1 pour top
                    quant : float=0.1):  # float de 0 à 1 définit le quantile
      if position == 0 :
