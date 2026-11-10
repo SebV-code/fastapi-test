@@ -7,7 +7,13 @@ from fastapi import FastAPI, Query
 ################################################################################
 
 app = FastAPI(title="Awesome API",
-    description="API de requête de données RH d'IBM",
+    description='''
+                    Cette API permet d’interroger un jeu de données RH fictif d’IBM 
+                    à travers plusieurs opérations courantes de Pandas : aperçu des données,
+                    recherche de valeurs uniques, filtrage, agrégation et calcul de quantiles.
+                    Le projet a été réalisé pour expérimenter la création, 
+                    la documentation et le déploiement d’une API FastAPI.
+                ''',
     version="0.0.7" 
 )
 ##############################################################################
