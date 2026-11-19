@@ -2,7 +2,7 @@
 
 API pédagogique développée avec FastAPI pour tester le déploiement d'une application Python sur VPS et explorer plusieurs opérations Pandas sur un jeu de données RH fictif d'IBM.
 
-!!! Le serveur n'est pas toujours en ligne si vous souhaitez effectuer un test merci de contacter le propriétaire du repo !!!
+[Accéder à l'API](https://portfolio.vatinel.fr/fastapi-test/docs)
 
 ## Démonstration
 
